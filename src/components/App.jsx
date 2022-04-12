@@ -21,59 +21,65 @@ export class App extends Component {
     event.preventDefault();
 
     const {name, number} = event.currentTarget.elements;
-    
 
     const newContact = {
+      id: `${Math.random()}`,
       name: name.value,
       number: number.value,
-      id: Math.random()
-    };
-    
+    }
     
     this.setState(prevState => {
 
-    for (const item of prevState.contacts) {
-      return item.name.toLowerCase() === newContact.name.toLowerCase() 
-      ? alert(`${item.name} is already in contacts`) 
-      : {contacts: [...prevState.contacts, newContact]}
-    }
+      const allNames = [...prevState.contacts].map(item => item.name.toLowerCase())
+      // console.log(allNames)
 
-      
+
+      if (allNames.includes(newContact.name.toLowerCase())) {
+        alert(`${newContact.name} is already in contacts`)
+      } 
+      else {
+          return {contacts: [...prevState.contacts, newContact]}
+      }
+    
     })
+      
     event.currentTarget.reset();
   }
+  contactsList = () => {
+    return this.state.contacts.map(({id, name, number}) => { 
+      if (name.toLowerCase().includes(this.state.filter.toLowerCase())) {
+        return (
+          <li key={id} id={id} onClick={this.onDeleteBtn}>
+            {name}: {number}
+            <button type="button">Delete</button>
+          </li>
+        )
+      } else {
+        return console.log('www')
+      }
+        
+    })
+  }
 
-onFilterChange = (event) => {
+  onFilterChange = (event) => {
 
 
-  this.setState({filter: event.currentTarget.value})
-}
+    this.setState({filter: event.currentTarget.value})
+  }
 
 
-onDeleteBtn = (event) => {
-if (event.target.nodeName !== "BUTTON") {
-  return
-} else {
-  const idOfLi = event.currentTarget.id;
-  console.log(idOfLi)
-  console.log(this.state.contacts)
+  onDeleteBtn = (event) => {
+    if (event.target.nodeName !== "BUTTON") {
+      return
+    } else {
+      const idOfLi = event.currentTarget.id;
 
-  this.setState(prevState => {
-
-    const check = prevState.contacts.filter(item => item.id !== idOfLi);
-    console.log(check)
-    
-
-   return {contacts: check}
-  
-                      
-  });
-  
-}
-
-}
+      this.setState(prevState => ({contacts: [...prevState.contacts].filter(item => item.id !== idOfLi)}))
+    }
+  }
 
   render () {
+    // console.log('state из рендера')
     // console.log(this.state)
     
     return (
@@ -116,17 +122,7 @@ if (event.target.nodeName !== "BUTTON") {
         <Title text={"Contacts"}/>
         <ul>
           {
-            this.state.contacts.map(({id, name, number}) => { 
-              if (name.toLowerCase().includes(this.state.filter.toLowerCase())) {
-                return (
-                  <li key={id} id={id} onClick={this.onDeleteBtn}>
-                    {name}: {number}
-                    <button type="button">Delete</button>
-                  </li>
-                )
-              } 
-                
-            })
+            this.contactsList()
           }
         </ul>
       </>
