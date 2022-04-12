@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-
+import { nanoid } from 'nanoid'
 import { Title } from 'components/Title/Title';
 // import { getAllByTitle } from "@testing-library/react";
 
@@ -23,7 +23,7 @@ export class App extends Component {
     const {name, number} = event.currentTarget.elements;
 
     const newContact = {
-      id: `${Math.random()}`,
+      id: `${nanoid()}`,
       name: name.value,
       number: number.value,
     }
